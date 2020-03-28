@@ -22,10 +22,11 @@ bot.onText(/\/echo (.+)/,function(msg,match){
     bot.sendMessage(chatId,echo);
 });
 bot.onText(/\/cancion (.+)/,function(msg,match){
+    var cancion = match[1];
     var chatId = msg.chat.id;
     var auth = 'Bearer BQD4IWZhKGtfMmfe8h6rQa3QxcgTkra3w0pfOL_qMT8x3ISvVQ-LehONmtQJ8mkL_GZ7L0e_twPtRj0nI6n-tNAu_TOaKKCCXE9XjNNL-Io-md3NgAZQxsHzsVjPMkvlFfWXSRuHtMlfvJTVYb4lG2HzuJE';
     var request = require('request');
-    var url = "https://api.spotify.com/v1/search?q=suma%20y%20sigue&type=track&market=ES&limit=1";
+    var url = "https://api.spotify.com/v1/search?q="+cancion+"&type=track&market=ES&limit=1";
     
     request.get( {
         url : url,
