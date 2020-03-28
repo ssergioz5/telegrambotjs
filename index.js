@@ -36,8 +36,6 @@ bot.onText(/\/cancion (.+)/,function(msg,match){
                 var cancion = match[1];
                 var chatId = msg.chat.id;
                 var auth = token;
-                console.log(token)
-                console.log(auth)
                 var request = require('request');
                 var url = "https://api.spotify.com/v1/search?q="+cancion+"&type=track&market=ES&limit=1";
                 
