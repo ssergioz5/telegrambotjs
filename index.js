@@ -10,8 +10,8 @@ bot.onText(/\/movie (.+)/,function(msg,match){
             bot.sendMessage(chatId, '_Buscando_ ' + movie + '...', {parse_mode: 'Markdown'})
             .then(function(msg){
                 var res = JSON.parse(body);
-                //bot.sendMessage(chatId, 'Result:' + body);  
-                bot.sendPhoto(chatId, res.Poster,{caption: 'Titulo: ' + res.Title + '\nAno: ' + res.Year + '\nGenero: ' + res.Genre + '\nDirector: ' + res.Director + '\nActores: ' + res.Actors + '\nArgumento: ' + res.Plot + '\nPais: ' + res.Country + '\nIMDB: ' + res.imdbRating})
+                bot.sendMessage(chatId, '\n\n\*Titulo: *' + res.Title + '\n\*Ano: *' + res.Year + '\n\*Genero: *' + res.Genre + '\n\*Director: *' + res.Director + '\n\*Actores: *' + res.Actors + '\n\*Argumento: *' + res.Plot + '\n\*Pais: *' + res.Country + '\n\*IMDB: *' + res.imdbRating,{parse_mode: 'Markdown'})
+                bot.sendPhoto(chatId, res.Poster)
             })
         }
     });
@@ -21,7 +21,7 @@ bot.onText(/\/echo (.+)/,function(msg,match){
     var echo = match[1];
     bot.sendMessage(chatId,echo);
 });
-bot.onText(/\/cancion (.+)/,function(msg,match){
+bot.onText(/\/music (.+)/,function(msg,match){
 
     //Pillo el token de spotify//
     var request = require('request');
@@ -52,11 +52,19 @@ bot.onText(/\/cancion (.+)/,function(msg,match){
                         var artista = res.tracks.items[0].artists[0].name
                         var album = res.tracks.items[0].album.name
                         var album_numero = res.tracks.items[0].disc_number
+                        var album_id = res.tracks.items[0].album.id
                         var cancion = res.tracks.items[0].name
                         var cancion_numero = res.tracks.items[0].track_number
                         var uri = res.tracks.items[0].uri
+                        uri = uri.replace(':track:', '');
+                        uri = uri.replace('spotify', '');
+                        uri = '['+cancion+'](https://open.spotify.com/track/'+uri+')'
                         var imagen = res.tracks.items[0].album.images[0].url
-                        bot.sendPhoto(chatId, imagen,{caption: "\nArtista: " + artista + "\nAlbum: " + album + "\nAlbum numero: " + album_numero + "\nCancion: " + cancion + "\nCancion numero: " + cancion_numero + "\nURL Spotify: " + uri})
+
+                        bot.sendMessage(chatId, '_Buscando_ ' + cancion + '...', {parse_mode: 'Markdown'})
+                        .then(function(msg){
+                        bot.sendMessage(chatId, uri + "\n\n\*Artista*: " + artista + '\n\*Album: *' + album + "\n\*Album numero: *" + album_numero + "\n\*Cancion: *" + cancion + "\n\*Cancion numero: *" + cancion_numero, {parse_mode: 'Markdown'})
+                        })
                     }else{
                         bot.sendMessage(chatId, "Sin resultados para '"+match[1]+"'.");
                     }
