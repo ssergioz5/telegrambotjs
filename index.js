@@ -21,3 +21,28 @@ bot.onText(/\/echo (.+)/,function(msg,match){
     var echo = match[1];
     bot.sendMessage(chatId,echo);
 });
+bot.onText(/\/cancion (.+)/,function(msg,match){
+    var chatId = msg.chat.id;
+    var auth = 'Bearer BQD4IWZhKGtfMmfe8h6rQa3QxcgTkra3w0pfOL_qMT8x3ISvVQ-LehONmtQJ8mkL_GZ7L0e_twPtRj0nI6n-tNAu_TOaKKCCXE9XjNNL-Io-md3NgAZQxsHzsVjPMkvlFfWXSRuHtMlfvJTVYb4lG2HzuJE';
+    var request = require('request');
+    var url = "https://api.spotify.com/v1/search?q=suma%20y%20sigue&type=track&market=ES&limit=1";
+    
+    request.get( {
+        url : url,
+        headers : {
+            'Content-Type': 'application/json',
+            "Authorization" : auth
+        }
+      }, function(error, response, body) {
+          var res = JSON.parse(body);
+          var artista = res.tracks.items[0].artists[0].name
+          var album = res.tracks.items[0].album.name
+          var album_numero = res.tracks.items[0].disc_number
+          var cancion = res.tracks.items[0].name
+          var cancion_numero = res.tracks.items[0].track_number
+          var uri = res.tracks.items[0].uri
+          var imagen = res.tracks.items[0].album.images[0].url
+          bot.sendPhoto(chatId, imagen,{caption: "\nArtista: " + artista + "\nAlbum: " + album + "\nAlbum numero: " + album_numero + "\nCancion: " + cancion + "\nCancion numero: " + cancion_numero + "\nURL Spotify: " + uri})
+          //console.log('body : \nArtista:', artista + "\nAlbum: " + album + "\nAlbum numero: " + album_numero + "\nCancion: " + cancion + "\nCancion numero: " + cancion_numero + "\nURL Spotify: " + uri + "\nImagen: " + imagen);
+      } );
+});
