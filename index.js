@@ -214,6 +214,7 @@ bot.onText(/\/movie/,function(msg,match){
             request(`https://api.edamam.com/search?app_id=c15511b1&app_key=404a5f0346c51e437e3e04a6fc4fd3ff&q=${texto}`,function(error,response,body){
                 if(!error && response.statusCode == 200){
                     var res = JSON.parse(body);
+                    if(res.count != '0'){
                     var uri1 = res.hits[0].recipe.url
                     uri1 = '[RECETA 1]('+ uri1 + ')'
                     var uri2 = res.hits[1].recipe.url
@@ -223,6 +224,9 @@ bot.onText(/\/movie/,function(msg,match){
                     bot.sendMessage(chatId1, uri1, {parse_mode: 'Markdown'})
                     bot.sendMessage(chatId2, uri2, {parse_mode: 'Markdown'})
                     bot.sendMessage(chatId3, uri3, {parse_mode: 'Markdown'})
+                    }else{
+                        bot.sendMessage(chatId1, "No se encontró receta para _" + texto + '_', {parse_mode: 'Markdown'})  
+                    }
                 }else{
                     bot.sendMessage(chatId1, "No se encontró receta para _" + texto + '_', {parse_mode: 'Markdown'})
                 }
@@ -355,6 +359,7 @@ bot.onText(/\/recipe (.+)/,function(msg,match){
     request(`https://api.edamam.com/search?app_id=c15511b1&app_key=404a5f0346c51e437e3e04a6fc4fd3ff&q=${texto}`,function(error,response,body){
         if(!error && response.statusCode == 200){
             var res = JSON.parse(body);
+            if(res.count != '0'){
             var uri1 = res.hits[0].recipe.url
             uri1 = '[RECETA 1]('+ uri1 + ')'
             var uri2 = res.hits[1].recipe.url
@@ -364,6 +369,9 @@ bot.onText(/\/recipe (.+)/,function(msg,match){
             bot.sendMessage(chatId1, uri1, {parse_mode: 'Markdown'})
             bot.sendMessage(chatId2, uri2, {parse_mode: 'Markdown'})
             bot.sendMessage(chatId3, uri3, {parse_mode: 'Markdown'})
+            }else{
+                bot.sendMessage(chatId1, "No se encontró receta para _" + texto + '_', {parse_mode: 'Markdown'})  
+            }
         }else{
             bot.sendMessage(chatId1, "No se encontró receta para _" + texto + '_', {parse_mode: 'Markdown'})
         }
