@@ -18,11 +18,35 @@ bot.onText(/\/movie (.+)/,function(msg,match){
             bot.sendMessage(chatId, '_Buscando_ ' + movie + '...', {parse_mode: 'Markdown'})
             .then(function(msg){
                 var res = JSON.parse(body);
+                var Year = res.Year
                 var uri = '(https://www.imdb.com/title/' + res.imdbID + '/)'
-                uri = '[Ver en IMDB]' + uri
+                uri = '[Ficha IMDB]' + uri
                 //bot.sendPhoto(chatId, res.Poster)
                 bot.sendMessage(chatId, '\n\*Titulo: *' + res.Title + '\n\*Fecha estreno: *' + res.Released + '\n\*Duración: *' + res.Runtime + '\n\*Genero: *' + res.Genre + '\n\*Director: *' + res.Director + '\n\*Actores: *' + res.Actors + '\n\*Argumento: *' + res.Plot + '\n\*Pais: *' + res.Country + '\n\*IMDB: *' + res.imdbRating + '\n\n' + uri,{parse_mode: 'Markdown'})
                 
+                //Trailer de youtube
+                var {google} = require('googleapis');
+                var youtube = google.youtube({
+                version: 'v3',
+                auth: "AIzaSyCcOItWFNvrJipevanmYR2uhBI5H1adnzs"
+                });
+
+                youtube.search.list({
+                    part: 'snippet',
+                    q: movie + ' ' + Year +' trailer español españa',
+                    type: 'video',
+                    reqgionCode: '34'
+                }, function (err, data) {
+                    if (err) {
+                    console.error('Error: ' + err);
+                    }
+                    if (data) {
+                    var videoID = data.data.items[0].id.videoId
+                    videoID = '[TRAILER](https://www.youtube.com/watch?v=' + videoID + ')'
+                    bot.sendMessage(chatId, videoID, {parse_mode: 'Markdown'})
+                    }
+                });
+
             })
         }else{
             bot.sendMessage(chatId, "No se encontró la película _"+movie+"_", {parse_mode: 'Markdown'})
