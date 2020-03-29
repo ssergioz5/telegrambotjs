@@ -1,22 +1,14 @@
+var request = require('request');
 
-var {google} = require('googleapis');
-var youtube = google.youtube({
-   version: 'v3',
-   auth: "AIzaSyCcOItWFNvrJipevanmYR2uhBI5H1adnzs"
-});
+var texto = 'chicken enchilada'
 
-
-youtube.search.list({
-    part: 'snippet',
-    q: 'deadpool trailer español españa',
-    type: 'video',
-    reqgionCode: '34'
-  }, function (err, data) {
-    if (err) {
-      console.error('Error: ' + err);
+request(`https://api.edamam.com/search?app_id=c15511b1&app_key=404a5f0346c51e437e3e04a6fc4fd3ff&q=${texto}`,function(error,response,body){
+    if(!error && response.statusCode == 200){
+        var res = JSON.parse(body);
+        console.log(res)
+        console.log(res.hits[0])
+        console.log(res.hits[0].recipe.url)
+        console.log(res.hits[1].recipe.url)
+        console.log(res.hits[2].recipe.url)
     }
-    if (data) {
-      var videoID = data.data.items[0].id.videoId
-      console.log(data.data.items[0].snippet.thumbnails.high.url)
-    }
-  });
+  })

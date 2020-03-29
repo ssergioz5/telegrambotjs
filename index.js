@@ -112,3 +112,27 @@ bot.onText(/\/music (.+)/,function(msg,match){
         });
 
 });
+bot.onText(/\/recipe (.+)/,function(msg,match){
+    var request = require('request');
+    var chatId1 = msg.chat.id;
+    var chatId2 = msg.chat.id;
+    var chatId3 = msg.chat.id;
+    var texto = match[1];
+    
+    request(`https://api.edamam.com/search?app_id=c15511b1&app_key=404a5f0346c51e437e3e04a6fc4fd3ff&q=${texto}`,function(error,response,body){
+        if(!error && response.statusCode == 200){
+            var res = JSON.parse(body);
+            var uri1 = res.hits[0].recipe.url
+            uri1 = '[RECETA 1]('+ uri1 + ')'
+            var uri2 = res.hits[1].recipe.url
+            uri2 = '[RECETA 2]('+ uri2 + ')'
+            var uri3 = res.hits[2].recipe.url
+            uri3 = '[RECETA 3]('+ uri3 + ')'
+            bot.sendMessage(chatId1, uri1, {parse_mode: 'Markdown'})
+            bot.sendMessage(chatId2, uri2, {parse_mode: 'Markdown'})
+            bot.sendMessage(chatId3, uri3, {parse_mode: 'Markdown'})
+        }else{
+            bot.sendMessage(chatId1, "No se encontró receta para _" + texto + '_', {parse_mode: 'Markdown'})
+        }
+      })
+});
