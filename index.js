@@ -5,14 +5,27 @@ var request = require('request')
 bot.onText(/\/movie (.+)/,function(msg,match){
     var movie = match[1];
     var chatId = msg.chat.id;
-    request(`http://www.omdbapi.com/?apikey=59022c1b&t=${movie}`,function(error,response,body){
-        if(!error && response.statusCode == 200){
+    //request(`http://www.omdbapi.com/?apikey=59022c1b&t=${movie}`,function(error,response,body){
+    var url = 'http://www.omdbapi.com/?apikey=59022c1b&t='+movie
+        request.get( {
+            url : url,
+            headers : {
+                "Acceptt-Language" : "es; q=1.0, en; q=0.5"
+            }
+        }, function(error, response, body) {
+            var res = JSON.parse(body);
+        if(!error && response.statusCode == 200 && res.Response != 'False'){
             bot.sendMessage(chatId, '_Buscando_ ' + movie + '...', {parse_mode: 'Markdown'})
             .then(function(msg){
                 var res = JSON.parse(body);
-                bot.sendMessage(chatId, '\n\n\*Titulo: *' + res.Title + '\n\*Ano: *' + res.Year + '\n\*Genero: *' + res.Genre + '\n\*Director: *' + res.Director + '\n\*Actores: *' + res.Actors + '\n\*Argumento: *' + res.Plot + '\n\*Pais: *' + res.Country + '\n\*IMDB: *' + res.imdbRating,{parse_mode: 'Markdown'})
-                bot.sendPhoto(chatId, res.Poster)
+                var uri = '(https://www.imdb.com/title/' + res.imdbID + '/)'
+                uri = '[Ver en IMDB]' + uri
+                //bot.sendPhoto(chatId, res.Poster)
+                bot.sendMessage(chatId, '\n\*Titulo: *' + res.Title + '\n\*Fecha estreno: *' + res.Released + '\n\*Duración: *' + res.Runtime + '\n\*Genero: *' + res.Genre + '\n\*Director: *' + res.Director + '\n\*Actores: *' + res.Actors + '\n\*Argumento: *' + res.Plot + '\n\*Pais: *' + res.Country + '\n\*IMDB: *' + res.imdbRating + '\n\n' + uri,{parse_mode: 'Markdown'})
+                
             })
+        }else{
+            bot.sendMessage(chatId, "No se encontró la película _"+movie+"_", {parse_mode: 'Markdown'})
         }
     });
 });
